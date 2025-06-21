@@ -1,3 +1,5 @@
+from selenium.webdriver.support.select import Select
+import time
 from pages.base_page import BasePage
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -18,11 +20,13 @@ class RegistrationPage(BasePage):
     FEMALE_GENDER = ("xpath", "//input[@name='gender' and @value='female']")
     MALE_GENDER = ("xpath", "//input[@name='gender' and @value='male']")
     CHECK_FIELD = ("xpath", "//input[@name='gdpr_agree']")
+    SUBMIT_BUTTON = (By.XPATH, "//input[@id='ossn-submit-button']")
+
 
     # Локаторы для datepicker
-    DATEPICKER_YEAR = ("xpath", "//select[@class='ui-datepicker-year']")
-    DATEPICKER_MONTH = ("xpath", "//select[@class='ui-datepicker-month']")
-    DATEPICKER_DAY = ("xpath", "//td[@data-handler='selectDay']/a")
+    DATEPICKER_YEAR = (By.CLASS_NAME, "ui-datepicker-year")
+    DATEPICKER_MONTH = (By.CLASS_NAME, "ui-datepicker-month")
+    DATEPICKER_DAY = (By.XPATH, "//td[@data-handler='selectDay']/a")
 
     def enter_firstname(self, firstname):
         self.type(self.FIRSTNAME_FIELD, firstname)
@@ -43,18 +47,35 @@ class RegistrationPage(BasePage):
         self.type(self.PASSWORD_FIELD, password)
 
     def select_birthdate(self, day, month, year):
-        self.click(self.BIRTHDATE_FIELD)  # Открываем datepicker
+        # Открываем календарь
+        self.click(self.BIRTHDATE_FIELD)
 
-        # Выбираем год
-        self.select_by_visible_text(self.DATEPICKER_YEAR, str(year))
+        # Ждем появления datepicker
+        datepicker = WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "ui-datepicker"))
+        )
 
-        # Выбираем месяц (нумерация с 0)
-        self.select_by_visible_text(self.DATEPICKER_MONTH,
-                                    month if isinstance(month, str) else self._get_month_name(month))
+        # Выбиор года
+        year_select = Select(datepicker.find_element(By.CLASS_NAME, "ui-datepicker-year"))
+        year_select.select_by_visible_text(str(year))
 
-        # Выбираем день
-        day_locator = (self.DATEPICKER_DAY[0], f"{self.DATEPICKER_DAY[1]}[.='{day}']")
-        self.click(day_locator)
+        #Выбор месяца
+        month_select = Select(datepicker.find_element(By.CLASS_NAME, "ui-datepicker-month"))
+        if isinstance(month, str):
+            month_select.select_by_visible_text(month.strip())
+        else:
+            month_select.select_by_value(str(month - 1))
+
+        # Обновление календаря
+        time.sleep(0.5)
+
+        # Выбор дня
+        day_element = datepicker.find_element(
+            By.XPATH,
+            f"//td[@data-handler='selectDay']/a[text()='{day}']"
+        )
+        day_element.click()
+
 
     def select_gender(self, gender='female'):
         if gender.lower() == 'female':
@@ -66,9 +87,12 @@ class RegistrationPage(BasePage):
         self.click(self.CHECK_FIELD)
 
     def _get_month_name(self, month_num):
-        """Конвертирует номер месяца в название"""
         months = [
             "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
         ]
         return months[month_num - 1]
+
+    def submit_registration(self):
+        # Нажатие кнопки создания аккаунта
+        self.click(self.SUBMIT_BUTTON)
