@@ -5,11 +5,12 @@ from selenium.webdriver.ie.webdriver import WebDriver
 
 
 class BasePage:
+    _PAGE_URL = "https://demo.opensource-socialnetwork.org/"
     def __init__(self, driver):
         self.driver: WebDriver = driver
 
     def open(self):
-        self.driver.get(self.PAGE_URL)
+        self.driver.get(self._PAGE_URL)
 
     def type(self, locator, text):
         # Ввод текста в поле

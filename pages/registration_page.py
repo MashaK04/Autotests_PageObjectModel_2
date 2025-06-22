@@ -7,48 +7,48 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 class RegistrationPage(BasePage):
-    PAGE_URL = "https://demo.opensource-socialnetwork.org/"
+    _PAGE_URL = "https://demo.opensource-socialnetwork.org/"
 
     # Описание полей формы
-    FIRSTNAME_FIELD = ("xpath", "//input[@name='firstname']")
-    LASTNAME_FIELD = ("xpath", "//input[@name='lastname']")
-    EMAIL_FIELD = ("xpath", "//input[@name='email']")
-    RE_EMAIL_FIELD = ("xpath", "//input[@name='email_re']")
-    USERNAME_FIELD = ("xpath", "//input[@name='username']")
-    PASSWORD_FIELD = ("xpath", "//input[@name='password']")
-    BIRTHDATE_FIELD = ("xpath", "//input[@name='birthdate']")
-    FEMALE_GENDER = ("xpath", "//input[@name='gender' and @value='female']")
-    MALE_GENDER = ("xpath", "//input[@name='gender' and @value='male']")
-    CHECK_FIELD = ("xpath", "//input[@name='gdpr_agree']")
-    SUBMIT_BUTTON = (By.XPATH, "//input[@id='ossn-submit-button']")
+    _FIRSTNAME_FIELD = ("xpath", "//input[@name='firstname']")
+    _LASTNAME_FIELD = ("xpath", "//input[@name='lastname']")
+    _EMAIL_FIELD = ("xpath", "//input[@name='email']")
+    _RE_EMAIL_FIELD = ("xpath", "//input[@name='email_re']")
+    _USERNAME_FIELD = ("xpath", "//input[@name='username']")
+    _PASSWORD_FIELD = ("xpath", "//input[@name='password']")
+    _BIRTHDATE_FIELD = ("xpath", "//input[@name='birthdate']")
+    _FEMALE_GENDER = ("xpath", "//input[@name='gender' and @value='female']")
+    _MALE_GENDER = ("xpath", "//input[@name='gender' and @value='male']")
+    _CHECK_FIELD = ("xpath", "//input[@name='gdpr_agree']")
+    _SUBMIT_BUTTON = (By.XPATH, "//input[@id='ossn-submit-button']")
 
 
     # Локаторы для datepicker
-    DATEPICKER_YEAR = (By.CLASS_NAME, "ui-datepicker-year")
-    DATEPICKER_MONTH = (By.CLASS_NAME, "ui-datepicker-month")
-    DATEPICKER_DAY = (By.XPATH, "//td[@data-handler='selectDay']/a")
+    _DATEPICKER_YEAR = (By.CLASS_NAME, "ui-datepicker-year")
+    _DATEPICKER_MONTH = (By.CLASS_NAME, "ui-datepicker-month")
+    _DATEPICKER_DAY = (By.XPATH, "//td[@data-handler='selectDay']/a")
 
     def enter_firstname(self, firstname):
-        self.type(self.FIRSTNAME_FIELD, firstname)
+        self.type(self._FIRSTNAME_FIELD, firstname)
 
     def enter_lastname(self, lastname):
-        self.type(self.LASTNAME_FIELD, lastname)
+        self.type(self._LASTNAME_FIELD, lastname)
 
     def enter_email(self, email):
-        self.type(self.EMAIL_FIELD, email)
+        self.type(self._EMAIL_FIELD, email)
 
     def reenter_email(self, reemail):
-        self.type(self.RE_EMAIL_FIELD, reemail)
+        self.type(self._RE_EMAIL_FIELD, reemail)
 
     def enter_username(self, username):
-        self.type(self.USERNAME_FIELD, username)
+        self.type(self._USERNAME_FIELD, username)
 
     def enter_password(self, password):
-        self.type(self.PASSWORD_FIELD, password)
+        self.type(self._PASSWORD_FIELD, password)
 
     def select_birthdate(self, day, month, year):
         # Открываем календарь
-        self.click(self.BIRTHDATE_FIELD)
+        self.click(self._BIRTHDATE_FIELD)
 
         # Ждем появления datepicker
         datepicker = WebDriverWait(self.driver, 10).until(
@@ -79,12 +79,12 @@ class RegistrationPage(BasePage):
 
     def select_gender(self, gender='female'):
         if gender.lower() == 'female':
-            self.click(self.FEMALE_GENDER)
+            self.click(self._FEMALE_GENDER)
         else:
-            self.click(self.MALE_GENDER)
+            self.click(self._MALE_GENDER)
 
     def accept_agreement(self):
-        self.click(self.CHECK_FIELD)
+        self.click(self._CHECK_FIELD)
 
     def _get_month_name(self, month_num):
         months = [
@@ -95,4 +95,4 @@ class RegistrationPage(BasePage):
 
     def submit_registration(self):
         # Нажатие кнопки создания аккаунта
-        self.click(self.SUBMIT_BUTTON)
+        self.click(self._SUBMIT_BUTTON)
